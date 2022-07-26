@@ -1,4 +1,4 @@
-from PyMessagingFramework.src.framework import BaseCommandHandler
+from PyMessagingFramework_zuhairmhtb.framework import BaseCommandHandler
 from PyMessagingFramework.example.publisher.event.message_processed_event import TopicMessageProcessedEvent, DirectMessageProcessedEvent, FanoutMessageProcessedEvent
 
 class DirectMessageProcessedHandler(BaseCommandHandler):

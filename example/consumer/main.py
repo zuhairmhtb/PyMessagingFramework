@@ -1,4 +1,4 @@
-from PyMessagingFramework.src.framework import MessagingFramework
+from PyMessagingFramework_zuhairmhtb.framework import MessagingFramework
 from PyMessagingFramework.example.consumer.commands.show_message_command import ShowMessageCommand
 from PyMessagingFramework.example.consumer.handlers.show_message_handler import ShowMessageHandler
 from PyMessagingFramework.example.consumer.config import BROKER_URL, BROKER_PORT, BROKER_USERNAME, BROKER_PASSWORD

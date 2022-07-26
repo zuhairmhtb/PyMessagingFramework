@@ -1,4 +1,4 @@
-from PyMessagingFramework.src.framework import MessagingFramework
+from PyMessagingFramework_zuhairmhtb.framework import MessagingFramework
 from PyMessagingFramework.example.publisher.event.message_processed_event import DirectMessageProcessedEvent, FanoutMessageProcessedEvent, TopicMessageProcessedEvent
 from PyMessagingFramework.example.subscriber.handlers.message_processed_handler import DirectMessageProcessedHandler, FanoutMessageProcessedHandler, TopicMessageProcessedHandler
 from PyMessagingFramework.example.publisher.config import BROKER_URL, BROKER_PORT, BROKER_USERNAME, BROKER_PASSWORD

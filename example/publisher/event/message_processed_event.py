@@ -1,4 +1,4 @@
-from PyMessagingFramework.src.framework import BaseCommand, Exchanges
+from PyMessagingFramework_zuhairmhtb.framework import BaseCommand, Exchanges
 
 class DirectMessageProcessedEvent(BaseCommand):
 
