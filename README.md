@@ -1,8 +1,8 @@
 # PyMessagingFramework
 
-This is a messaging framework to manage commands and events of RabbitMQ. 
+This is a messaging framework to manage commands and events of RabbitMQ in a microservice architecture.
 
-In a microservice architecture, currently commands and events are published as json data or via pickled objects. However, in a language independent system where RabbitMQ is the message broker, passing messages between the systems is feasible only via json objects.
+In a microservice architecture, currently commands and events are published as json data or via pickled objects. However, in a language independent system where RabbitMQ is the message broker, passing messages between the systems is feasible mainly via json objects.
 
 If the data is passed as json, and if the message format changes, we have to find all json calls in the service and update them. This creates a problem as the same json data for a message can exist in multiple places.
 
@@ -120,3 +120,23 @@ framework.publish_message(CommandA(param1="Hello", param2="World!"))
 The MessagingFramework will convert the command object to json data and route it to the queue of ServiceA. The MessagingFramework of ServiceA will receive the json data, parse it to the command object and call the associated handler to execute the task. 
 
 ## Publisher publishing an event for one or more subscribers
+
+Publisher and subscriber can interact with events similar to consumers and producers. Some example services are provided in the 'example' directory.
+
+The following type of events can currently be created:
+
+1. Direct
+
+2. Fanout
+
+3. Topic
+
+## Future updates
+
+1. Currently this library supports creating only blocking connections for the subscribers and consumers. Non-blocking connection will be implemented soon.
+
+2. Currently the library supports only RabbitMQ as the message broker. We have a plan to add support for other message brokers like Redis, etc.
+
+3. There is a plan to provide the functionality to implement Sagas for the services.
+
+In order to contribute to the project or provide feedback please contact zuhairmhtb@gmail.com. We would love to hear from you.

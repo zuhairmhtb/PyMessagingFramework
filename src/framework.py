@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, List, Dict
 import pika, json, inspect
 
 class BaseCommand:
@@ -80,19 +80,19 @@ class BrokerMessage:
     command name and calls the appropriate handler (if it exists) by parsing the json message to command object and passing
     it to the handler
     """
-    def __init__(self, message:str, command_name:str, command_type:str='command'):
+    def __init__(self, message:str, command_name:str, command_type:str=CommandTypes.COMMAND):
         """
         :param message: The message as json string
         :param command_name: The command name as string
         :param command_type: The type of command being sent or received: command or event
         """
-        self.message = message
-        self.command_name = command_name
-        self.command_type = command_type
+        self.message:str = message
+        self.command_name:str = command_name
+        self.command_type:str = command_type
 
 class Utility:
     @staticmethod
-    def convert_command_to_json(command:BaseCommand):
+    def convert_command_to_json(command:BaseCommand) -> dict:
         """
         This method converts a command object to dictionary
         :param command: BaseCommand object
@@ -101,7 +101,7 @@ class Utility:
         return json.loads(json.dumps(vars(command)))
 
     @staticmethod
-    def convert_json_to_command(command:dict, command_type:Type[BaseCommand]):
+    def convert_json_to_command(command:dict, command_type:Type[BaseCommand]) -> BaseCommand:
         """
         This method converts a json object to the corresponding command
         :param command: The dictionary which needs to be converted to object
@@ -111,9 +111,9 @@ class Utility:
         return command_type(**command)
 
 class Exchange:
-    def __init__(self, name, exchange_type):
-        self.name = name
-        self.exchange_type = exchange_type
+    def __init__(self, name:str, exchange_type:str):
+        self.name:str = name
+        self.exchange_type:str = exchange_type
 
 class Exchanges:
     DIRECT = Exchange(name='direct_exchange', exchange_type='direct')
@@ -121,11 +121,11 @@ class Exchanges:
     TOPIC = Exchange(name='topic_exchange', exchange_type='topic')
 
     @staticmethod
-    def get_exchange_keys():
+    def get_exchange_keys() -> List[str]:
         return [Exchanges.DIRECT.name, Exchanges.FANOUT.name, Exchanges.TOPIC.name]
 
     @staticmethod
-    def get_exchanges_as_dict():
+    def get_exchanges_as_dict() -> Dict[str, str]:
         return {
             Exchanges.DIRECT.name : Exchanges.DIRECT,
             Exchanges.FANOUT.name : Exchanges.FANOUT,
@@ -162,43 +162,43 @@ class MessagingFramework:
         """
         if type(broker_url) != str or len(broker_url) == 0:
             raise  ValueError("The broker url must be a string")
-        self.broker_url = broker_url
+        self.broker_url:str = broker_url
         if type(broker_port) != int or broker_port <= 0:
             raise  ValueError("The broker port must be an integer")
-        self.broker_port = broker_port
+        self.broker_port:int = broker_port
         if type(broker_username) != str:
             raise ValueError("The broker username must be a string")
-        self.broker_username = broker_username
+        self.broker_username:str = broker_username
         if type(broker_password) != str:
             raise ValueError("The broker password must be a string")
-        self.broker_password = broker_password
+        self.broker_password:str = broker_password
         if type(queue_name) != str:
             raise ValueError("Queue name must be a string")
-        self.queue_name = queue_name
+        self.queue_name:str = queue_name
         if type(passive) != bool:
             raise  ValueError("Argument passive must be boolean")
-        self.passive = passive
+        self.passive:bool = passive
         if type(durable) != bool:
             raise  ValueError("Argument durable must be boolean")
-        self.durable = durable
+        self.durable:bool = durable
         if type(exclusive) != bool:
             raise  ValueError("Argument exclusive must be boolean")
-        self.exclusive = exclusive
+        self.exclusive:bool = exclusive
         if type(auto_delete) != bool:
             raise  ValueError("Argument auto_delete must be boolean")
-        self.auto_delete = auto_delete
+        self.auto_delete:bool = auto_delete
         if not (declare_queue_arguments is None) and type(declare_queue_arguments) != dict:
             raise  ValueError("Argument declare_queue_arguments must be dictionary or None as default")
-        self.declare_queue_arguments = declare_queue_arguments
+        self.declare_queue_arguments:dict = declare_queue_arguments
         if type(declare_queue) != bool:
             raise  ValueError("Argument declare_queue must be boolean")
-        self.declare_queue = declare_queue
+        self.declare_queue:bool = declare_queue
         if not (consume_arguments is None) and type(consume_arguments) != dict:
             raise  ValueError("Argument consume_arguments must be dictionary or None as default")
-        self.consume_arguments = consume_arguments
+        self.consume_arguments:dict = consume_arguments
         if type(non_blocking_connection) != bool:
             raise  ValueError("Argument non_blocking_connection must be boolean")
-        self.non_blocking_connection = non_blocking_connection
+        self.non_blocking_connection:bool = non_blocking_connection
 
 
         self.connection_params:pika.ConnectionParameters = None
@@ -385,7 +385,7 @@ class MessagingFramework:
     # Methods to handle incoming message
 
 
-    def handle_queue_command(self, broker_message):
+    def handle_queue_command(self, broker_message:BrokerMessage):
         """
         Handles commands sent to the queue
         :param self: The MessagingFramework object
@@ -404,7 +404,7 @@ class MessagingFramework:
             print(f"Command name {broker_message.command_name} is not found in the consumer command list")
 
 
-    def handle_queue_event(self, broker_message):
+    def handle_queue_event(self, broker_message:BrokerMessage):
         """
         Handles events sent to the queue
         :param self: The MessagingFramework object
