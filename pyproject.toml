@@ -1,5 +1,5 @@
 [project]
-name = "PyMessagingFramework_zuhairmhtb"
+name = "PyMessagingFramework"
 version = "1.0.0"
 authors = [
   { name="Zuhair Mehtab", email="zuhairmhtb@gmail.com" },

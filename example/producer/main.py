@@ -1,4 +1,4 @@
-from PyMessagingFramework_zuhairmhtb.framework import MessagingFramework
+from PyMessagingFramework.src.PyMessagingFramework.framework import MessagingFramework
 from PyMessagingFramework.example.consumer.commands.show_message_command import ShowMessageCommand
 from PyMessagingFramework.example.producer.config import BROKER_URL, BROKER_PORT, BROKER_USERNAME, BROKER_PASSWORD
 from PyMessagingFramework.example.producer.config import QUEUE_NAME as MY_QUEUE

@@ -1,4 +1,4 @@
-from PyMessagingFramework_zuhairmhtb.framework import BaseCommand
+from PyMessagingFramework.src.PyMessagingFramework.framework import BaseCommand
 from typing import List
 
 class ShowMessageCommand(BaseCommand):

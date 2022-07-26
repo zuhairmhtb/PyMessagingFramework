@@ -1,4 +1,4 @@
-from PyMessagingFramework_zuhairmhtb.framework import BaseCommandHandler
+from PyMessagingFramework.src.PyMessagingFramework.framework import BaseCommandHandler
 from PyMessagingFramework.example.consumer.commands.show_message_command import ShowMessageCommand
 
 class ShowMessageHandler(BaseCommandHandler):
