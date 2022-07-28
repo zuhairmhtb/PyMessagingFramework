@@ -74,7 +74,7 @@ class CommandTypes:
     COMMAND = "command"
     EVENT = "event"
 
-class BrokerMessage:
+class BrokerMessage(BaseCommand):
     """
     This is the message which is sent to the broker. The MessagingFramework receives this message from the broker, idetifies the
     command name and calls the appropriate handler (if it exists) by parsing the json message to command object and passing

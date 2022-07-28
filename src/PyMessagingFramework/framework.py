@@ -92,7 +92,7 @@ class MessagingFramework:
                     self.consumer_events[event_name] = ConsumerEventContainer(event=event, handler=handler)
                     try:
                         if isinstance(self.broker, MQConsumer):
-                            self.broker.bind_queue(exchange=exchange_name, routing_key=routing_key)
+                            self.broker.bind_queue(exchange_name=exchange_name, routing_key=routing_key)
                     except Exception as e:
                         print(e)
 
@@ -198,12 +198,10 @@ class MessagingFramework:
                     if command_name in selected_list:
                         if isinstance(self.broker, MQConsumer):
                             self.broker.publish_message(
-                                data=json.dumps(
-                                    Utility.convert_command_to_json(
+                                data=Utility.convert_command_to_json(
                                         BrokerMessage(message=json.dumps(json_command), command_name=command_name,
                                                       command_type=command_type)
-                                    )
-                                ),
+                                    ),
                                 exchange_name=selected_list[command_name].exchange_name,
                                 routing_key=selected_list[command_name].routing_key,
                                 properties=selected_list[command_name].properties
