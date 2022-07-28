@@ -3,6 +3,7 @@ from PyMessagingFramework.example.consumer.commands.show_message_command import 
 from PyMessagingFramework.example.producer.config import BROKER_URL, BROKER_PORT, BROKER_USERNAME, BROKER_PASSWORD
 from PyMessagingFramework.example.producer.config import QUEUE_NAME as MY_QUEUE
 from PyMessagingFramework.example.consumer.config import QUEUE_NAME as CONSUMER_QUEUE
+import threading
 
 
 """
@@ -19,19 +20,34 @@ communicate with this service.
 
 if __name__ == "__main__":
     # Initialize the framework
+    non_blocking = True
     framework = MessagingFramework(
         broker_url=BROKER_URL, # URL of rabbiMQ
         broker_port=BROKER_PORT, # port of rabbiMQ
         broker_username=BROKER_USERNAME, # username of rabbiMQ
         broker_password=BROKER_PASSWORD, # password of rabbiMQ
         queue_name=MY_QUEUE, # Queue name of producer
-        auto_delete=True  # Whether to auto delete the queue when application is stopped
+        auto_delete=True,  # Whether to auto delete the queue when application is stopped
+        non_blocking_connection=non_blocking
     )
 
     # Register the command with the QUEUE of consumer to which it should be forwarded
     framework.register_commands_as_producer(command=ShowMessageCommand, routing_key=CONSUMER_QUEUE, exchange_name='')
-    # Publish a command to send a message to consumer
-    framework.publish_message(ShowMessageCommand(message="Hello world", number=12, array=[1, 2, 3]))
-    # Close the RabbitMQ connection
-    framework.close_connection()
+    if non_blocking:
+        print("Starting framework")
+        framework.start()
+        print("Framework started")
+        framework.publish_message(ShowMessageCommand(message="Hello world", number=12, array=[1, 2, 3]))
+        # Close the RabbitMQ connection
+        framework.close_connection()
+    else:
+        print("Starting framework")
+        thread = threading.Thread(target=framework.start)
+        thread.start()
+        inp = input("Enter a message to publish:")
+        framework.publish_message(ShowMessageCommand(message=str(inp), number=12, array=[1, 2, 3]))
+        inp = input("Enter a message to close:")
+        framework.close_connection()
+        thread.join(10)
+
 

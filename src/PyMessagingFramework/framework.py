@@ -4,7 +4,8 @@ from PyMessagingFramework.src.PyMessagingFramework.utils import BaseCommand, Bas
 from PyMessagingFramework.src.PyMessagingFramework.utils import ConsumerCommandContainer, ConsumerEventContainer
 from PyMessagingFramework.src.PyMessagingFramework.utils import ProducerCommandContainer, ProducerEventContainer
 from PyMessagingFramework.src.PyMessagingFramework.utils import CommandTypes, BrokerMessage, Utility, Exchanges
-from PyMessagingFramework.src.PyMessagingFramework.consumers import Consumers, MQBlockingConsumer, MQConsumer
+from PyMessagingFramework.src.PyMessagingFramework.consumers import Consumers, Consumer, MQConsumer
+from PyMessagingFramework.src.PyMessagingFramework.consumers import MQBlockingConsumer, MQNonBlockingConsumer
 
 
 class MessagingFramework:
@@ -43,7 +44,7 @@ class MessagingFramework:
             print("Broker not recognized. Falling back to RabbitMQ as default")
             broker = Consumers.MQ
 
-        self.broker = None
+        self.broker:Consumer = None
         if broker == Consumers.MQ:
             if not self.non_blocking_connection:
                 self.broker = MQBlockingConsumer(
@@ -51,6 +52,16 @@ class MessagingFramework:
                     broker_username=broker_username, broker_password=broker_password,
                     queue_name=queue_name, passive=passive, durable=durable, exclusive=exclusive,
                     auto_delete=auto_delete, declare_queue_arguments=declare_queue_arguments, declare_queue=declare_queue,
+                    consume_arguments=consume_arguments, non_blocking_connection=non_blocking_connection,
+                    consumer_message_callback=self.handle_queue_message
+                )
+            else:
+                self.broker = MQNonBlockingConsumer(
+                    broker_url=broker_url, broker_port=broker_port,
+                    broker_username=broker_username, broker_password=broker_password,
+                    queue_name=queue_name, passive=passive, durable=durable, exclusive=exclusive,
+                    auto_delete=auto_delete, declare_queue_arguments=declare_queue_arguments,
+                    declare_queue=declare_queue,
                     consume_arguments=consume_arguments, non_blocking_connection=non_blocking_connection,
                     consumer_message_callback=self.handle_queue_message
                 )
@@ -214,7 +225,7 @@ class MessagingFramework:
         self.broker.start()
 
     def close_connection(self):
-        self.broker.close_connection()
+        self.broker.stop()
 
 
 

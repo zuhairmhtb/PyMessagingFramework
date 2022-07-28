@@ -3,6 +3,7 @@ from PyMessagingFramework.example.consumer.commands.show_message_command import 
 from PyMessagingFramework.example.consumer.handlers.show_message_handler import ShowMessageHandler
 from PyMessagingFramework.example.consumer.config import BROKER_URL, BROKER_PORT, BROKER_USERNAME, BROKER_PASSWORD
 from PyMessagingFramework.example.consumer.config import QUEUE_NAME as MY_QUEUE
+import threading
 
 """
 This file contains a demo service which acts as a consumer. It receives message from other service through PyMessagingFramework 
@@ -20,6 +21,7 @@ command with the handler and starts the framework so that it listens for message
 communicate with this service.
 """
 if __name__ == "__main__":
+    non_blocking = True
     # Initialize the framework
     framework = MessagingFramework(
         broker_url=BROKER_URL, # URL of rabbiMQ
@@ -27,11 +29,20 @@ if __name__ == "__main__":
         broker_username=BROKER_USERNAME, # username of rabbiMQ
         broker_password=BROKER_PASSWORD, # password of rabbiMQ
         queue_name=MY_QUEUE, # Queue name of consumer,
-        auto_delete=True # Whether to auto delete the queue when application is stopped
+        auto_delete=True, # Whether to auto delete the queue when application is stopped
+        non_blocking_connection=non_blocking # Creates a non blocking connection
     )
 
     # Register the command with the QUEUE to which it should be forwarded
     framework.register_commands_as_consumer(command=ShowMessageCommand, handler=ShowMessageHandler)
     # Start the application to start listening for messages
     print("Starting application")
-    framework.start()
+    if non_blocking:
+        thread = threading.Thread(target=framework.start)
+        thread.start()
+        inp = input("Enter value:")
+        framework.close_connection()
+        print("Stopping connection")
+        thread.join(10)
+    else:
+        framework.start()
