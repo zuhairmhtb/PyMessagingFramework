@@ -7,7 +7,7 @@ class Consumers:
     MQ = 'rabbitmq'
 
     @staticmethod
-    def get_consumers(self):
+    def get_consumers():
         return [Consumers.MQ]
 
 class Consumer(ABC):
