@@ -33,10 +33,7 @@ if __name__ == "__main__":
 
     # Register the command with the QUEUE of consumer to which it should be forwarded
     framework.register_commands_as_producer(command=ShowMessageCommand, routing_key=CONSUMER_QUEUE, exchange_name='')
-    if non_blocking:
-        print("Starting framework")
-        framework.start()
-        print("Framework started")
+    if not non_blocking:
         framework.publish_message(ShowMessageCommand(message="Hello world", number=12, array=[1, 2, 3]))
         # Close the RabbitMQ connection
         framework.close_connection()
