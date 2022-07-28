@@ -10,7 +10,7 @@ class Consumers:
     def get_consumers():
         return [Consumers.MQ]
 
-class Consumer():
+class Consumer(ABC):
 
     def __init__(self,  broker_url:str, broker_port:int, broker_username:str, broker_password:str, consumer_message_callback:Callable,
                  queue_name: str = '',auto_delete: bool = False, declare_queue: bool = True,
@@ -56,35 +56,35 @@ class Consumer():
         self.non_blocking_connection:bool = non_blocking_connection
         self.consumer_message_callback = consumer_message_callback
 
-
-    def __create_connection(self, *args, **kwargs):
+    @abstractmethod
+    def create_connection(self, *args, **kwargs):
         """
         Creates a connection with the message broker
         :return: None
         """
 
-
-    def __create_queue_and_handle_commands(self, *args, **kwargs):
+    @abstractmethod
+    def create_queue_and_handle_commands(self, *args, **kwargs):
         """
         Creates a queue for the application
         :return: None
         """
 
-
+    @abstractmethod
     def close_connection(self, *args, **kwargs):
         """
         Closes the connection with broker
         :return: None
         """
 
-
+    @abstractmethod
     def start(self, *args, **kwargs):
         """
         Starts the main service application to start consuming data from queue
         :return: None
         """
 
-
+    @abstractmethod
     def publish_message(self, data:dict, *args, **kwargs):
         """
         Converts the base command to a json string and publishes it to the appropriate routing key
@@ -93,8 +93,8 @@ class Consumer():
         :return: None
         """
 
-
-    def __handle_message(self, *args, **kwargs):
+    @abstractmethod
+    def handle_message(self, *args, **kwargs):
         """
         It gets executed when the queue receives a message
         :return:
@@ -151,14 +151,14 @@ class MQConsumer(Consumer):
         self.channel: pika.adapters.blocking_connection.BlockingChannel = None
         self.declare_queue_result = None
 
-
-    def __create_exchanges(self, *args, **kwargs):
+    @abstractmethod
+    def create_exchanges(self, *args, **kwargs):
         """
         Creates required exchanges
         :return:
         """
 
-
+    @abstractmethod
     def publish_message(self, data:dict, routing_key:str, exchange_name:str, properties:pika.BasicProperties, *args, **kwargs):
         """
         Converts the base command to a json string and publishes it to the appropriate routing key
@@ -169,8 +169,7 @@ class MQConsumer(Consumer):
         :return: None
         """
 
-
-
+    @abstractmethod
     def bind_queue(self, exchange_name:str, routing_key:str, *args, **kwargs):
         """
         Bind a queue to the exchange
@@ -179,7 +178,7 @@ class MQConsumer(Consumer):
         :return: None
         """
 
-    def _handle_message(self, ch, method, properties, body):
+    def handle_message(self, ch, method, properties, body):
         """
         Executed when queue receives a message
         :param ch: The channel data
@@ -244,13 +243,13 @@ class MQBlockingConsumer(MQConsumer):
                                          declare_queue_arguments=declare_queue_arguments, consume_arguments=consume_arguments,
                                          consumer_message_callback=consumer_message_callback)
 
-        self.__create_connection()
-        self.__create_exchanges()
-        self.__create_queue_and_handle_commands()
+        self.create_connection()
+        self.create_exchanges()
+        self.create_queue_and_handle_commands()
 
 
 
-    def __create_connection(self):
+    def create_connection(self):
         """
         Creates a connection with the message broker
         :return: None
@@ -270,13 +269,13 @@ class MQBlockingConsumer(MQConsumer):
         self.connection = pika.BlockingConnection(self.connection_params)
         self.channel = self.connection.channel()
 
-    def __create_exchanges(self):
+    def create_exchanges(self):
         if not (self.channel is None) and not self.channel.is_closed:
             self.channel.exchange_declare(exchange=Exchanges.DIRECT.name, exchange_type=Exchanges.DIRECT.exchange_type)
             self.channel.exchange_declare(exchange=Exchanges.FANOUT.name, exchange_type=Exchanges.FANOUT.exchange_type)
             self.channel.exchange_declare(exchange=Exchanges.TOPIC.name, exchange_type=Exchanges.TOPIC.exchange_type)
 
-    def __create_queue_and_handle_commands(self):
+    def create_queue_and_handle_commands(self):
         if not (self.connection is None) and self.connection.is_open and not (self.channel is None):
             if self.declare_queue:
                 self.declare_queue_result = self.channel.queue_declare(
@@ -292,7 +291,7 @@ class MQBlockingConsumer(MQConsumer):
                 queue=self.queue_name,
                 auto_ack=False,
                 arguments=self.consume_arguments,
-                on_message_callback=lambda ch, method, properties, body : self._handle_message(ch=ch, method=method, properties=properties, body=body)
+                on_message_callback=lambda ch, method, properties, body : self.handle_message(ch=ch, method=method, properties=properties, body=body)
             )
 
     def close_connection(self):
