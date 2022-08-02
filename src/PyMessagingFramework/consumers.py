@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from PyMessagingFramework.src.PyMessagingFramework.utils import CommandTypes, Exchanges, BrokerMessage, Utility
+from PyMessagingFramework.utils import CommandTypes, Exchanges, BrokerMessage, Utility
 import pika, json, functools, logging
 from typing import Callable, List
 

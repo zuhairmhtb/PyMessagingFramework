@@ -1,11 +1,11 @@
 from typing import Type, List, Dict
 import pika, json, inspect
-from PyMessagingFramework.src.PyMessagingFramework.utils import BaseCommand, BaseCommandHandler
-from PyMessagingFramework.src.PyMessagingFramework.utils import ConsumerCommandContainer, ConsumerEventContainer
-from PyMessagingFramework.src.PyMessagingFramework.utils import ProducerCommandContainer, ProducerEventContainer
-from PyMessagingFramework.src.PyMessagingFramework.utils import CommandTypes, BrokerMessage, Utility, Exchanges
-from PyMessagingFramework.src.PyMessagingFramework.consumers import Consumers, Consumer, MQConsumer
-from PyMessagingFramework.src.PyMessagingFramework.consumers import MQBlockingConsumer, MQNonBlockingConsumer
+from PyMessagingFramework.utils import BaseCommand, BaseCommandHandler
+from PyMessagingFramework.utils import ConsumerCommandContainer, ConsumerEventContainer
+from PyMessagingFramework.utils import ProducerCommandContainer, ProducerEventContainer
+from PyMessagingFramework.utils import CommandTypes, BrokerMessage, Utility, Exchanges
+from PyMessagingFramework.consumers import Consumers, Consumer, MQConsumer
+from PyMessagingFramework.consumers import MQBlockingConsumer, MQNonBlockingConsumer
 
 
 class MessagingFramework:

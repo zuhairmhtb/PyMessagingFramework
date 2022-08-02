@@ -1,13 +1,13 @@
 [project]
 name = "PyMessagingFramework"
-version = "1.0.0"
+version = "1.1.0"
 authors = [
   { name="Zuhair Mehtab", email="zuhairmhtb@gmail.com" },
 ]
 description = "Messaging infrastructure for communication between microservices in Python"
 readme = "README.md"
 license = { file="LICENSE" }
-requires-python = ">=3.7"
+requires-python = ">=3.4"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
