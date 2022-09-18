@@ -207,7 +207,7 @@ class MQConsumer(Consumer):
             else:
                 raise ValueError("Could not parse queue data to broker message")
         except Exception as e:
-            print("Received message " + body + ". Could not parse the data.")
+            print("Received message " + str(body) + ". Could not parse the data.")
             print(e)
             ch.basic_ack(delivery_tag=method.delivery_tag)
 

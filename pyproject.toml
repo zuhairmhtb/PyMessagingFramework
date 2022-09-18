@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "PyMessagingFramework"
-version = "2.0.0"
+version = "2.0.1"
 description = "Messaging infrastructure for communication between microservices in Python"
 authors = ["zuhairmhtb <zuhairmhtb@gmail.com>"]
 readme = "README.md"
